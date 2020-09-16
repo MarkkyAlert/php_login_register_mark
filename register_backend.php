@@ -3,8 +3,8 @@ session_start();
 include('connectdb.php');
 
 
-$_SESSION['err_password_regis'] = '';
-$_SESSION['err_username_regis'] = '';
+
+
 
 if (isset($_POST['submit'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -15,34 +15,35 @@ if (isset($_POST['submit'])) {
     $data = mysqli_fetch_assoc($result_check);
 
     if ($password1 !== $password2) {
-        
+
 
         if ($data['username'] === $username) {
             $_SESSION['err_username_regis'] = "Username already exists";
             header('location: register.php');
-        }
-
-        else {
+        } else {
             $_SESSION['err_password_regis'] = "Password does not match";
             header('location: register.php');
         }
-        
-    }
+    } elseif ($password1 === $password2) {
 
-    elseif ($password1 === $password2) {
-        
         if ($data['username'] === $username) {
             $_SESSION['err_username_regis'] = "Username already exists";
             header('location: register.php');
-        }
-
-        else {
-            $query_insert = "INSERT INTO users (username, password) VALUES ('$username', '$password1')";
+        } else {
+            $passwordenc = md5($password1);
+            $query_insert = "INSERT INTO users (username, password) VALUES ('$username', '$passwordenc')";
             $result_insert = mysqli_query($conn, $query_insert);
-            $_SESSION['is_logged_in'] = true;
-            $_SESSION['username'] = $username;
-            header('location: index.php');
+
+            if ($result_insert) {
+                $_SESSION['is_logged_in'] = true;
+                $_SESSION['username'] = $username;
+                header('location: index.php');
+            }
+
+            else {
+                $_SESSION['error'] = 'Can not register';
+                header('location: register.php');
+            }
         }
     }
-    
 }

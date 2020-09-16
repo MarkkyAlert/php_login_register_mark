@@ -1,13 +1,9 @@
-<?php 
-    include('connectdb.php');
-    session_start();
-    error_reporting(E_ALL & ~E_NOTICE);
+<?php
+include('connectdb.php');
+session_start();
+error_reporting(E_ALL & ~E_NOTICE);
 
-    if (!isset($_SESSION['err_username_login'])) {
-        $_SESSION['err_username_login'] = '';
-    } else {
-        $err_username_login = $_SESSION['err_username_login'];
-    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,14 +27,13 @@
                 <form class="text-center border border-light p-5" action="login_backend.php" method="post">
 
                     <p class="h4 mb-4">Sign in</p>
-                    <?php if ($_SESSION['err_username_login'] !== '') {
-                        echo '<div class="alert alert-danger" role="alert">';
-                        echo $err_username_login;
-                        unset($_SESSION['err_username_login']);
-                        echo '</div>';
-                    }
-                    ?>
-                    
+                    <?php if (isset($_SESSION['err_username_login'])) : ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $_SESSION['err_username_login'] ?>
+                        </div>
+                    <?php endif; ?>
+
+
 
                     <!-- Email -->
                     <input type="text" id="defaultLoginFormEmail" name="username" class="form-control mb-4" placeholder="Username">
@@ -88,3 +83,9 @@
 </body>
 
 </html>
+
+<?php
+    if (isset($_SESSION['err_username_login'])) {
+        session_destroy();
+    }
+?>

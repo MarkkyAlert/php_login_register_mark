@@ -2,17 +2,7 @@
 include('connectdb.php');
 session_start();
 error_reporting(E_ALL & ~E_NOTICE);
-if (!$_SESSION['err_username_regis']) {
-    $_SESSION['err_username_regis'] = '';
-} else {
-    $err_username_regis = $_SESSION['err_username_regis'];
-}
 
-if (!$_SESSION['err_password_regis']) {
-    $_SESSION['err_password_regis'] = '';
-} else {
-    $err_password_regis = $_SESSION['err_password_regis'];
-}
 
 ?>
 <!DOCTYPE html>
@@ -39,27 +29,28 @@ if (!$_SESSION['err_password_regis']) {
                     <p class="h4 mb-4">Sign Up</p>
 
                     <!-- Email -->
-                    <?php if ($_SESSION['err_username_regis'] !== '') {
-                        echo '<div class="alert alert-danger" role="alert">';
-                        echo $err_username_regis;
-                        unset($_SESSION['err_username_regis']);
+                    <?php if (isset($_SESSION['err_username_regis'])) : ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $_SESSION['err_username_regis']; ?>
+                        </div>
+                    <?php endif; ?>
 
-                        echo '</div>';
-                    }
-                    ?>
+                    <?php if (isset($_SESSION['error'])) : ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $_SESSION['error']; ?>
+                        </div>
+                    <?php endif; ?>
                     <input type="username" id="defaultLoginFormEmail" name="username" class="form-control mb-4" placeholder="Username" required>
 
                     <!-- Password -->
                     <input type="password" id="defaultLoginFormPassword" name="password1" class="form-control mb-4" placeholder="Password" required>
                     <input type="password" id="defaultLoginFormPassword" name="password2" class="form-control mb-4" placeholder="Confirm Password" required>
-                    <?php if ($_SESSION['err_password_regis'] !== '') {
-                        echo '<div class="alert alert-danger" role="alert">';
-                        echo $err_password_regis;
-                        unset($_SESSION['err_password_regis']);
+                    <?php if (isset($_SESSION['err_password_regis'])) : ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $_SESSION['err_password_regis']; ?>
+                        </div>
+                    <?php endif; ?>
 
-                        echo '</div>';
-                    }
-                    ?>
 
                     <div class="d-flex justify-content-around">
                         <div>
@@ -90,3 +81,9 @@ if (!$_SESSION['err_password_regis']) {
 </body>
 
 </html>
+
+<?php
+    if (isset($_SESSION['err_username_regis']) || isset($_SESSION['error']) || isset($_SESSION['err_password_regis'])) {
+        session_destroy();
+    }
+?>
